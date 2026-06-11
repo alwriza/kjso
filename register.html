@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ru" class="js no-touch">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация — KJSO</title>
+
+    <style>
+        @font-face {
+            font-family: "Cocomat Pro";
+            src: url("CocomatPro-Regular.woff2") format("woff2");
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: "Cocomat Pro";
+            src: url("CocomatPro-Bold.woff2") format("woff2");
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        :root {
+            --container-width: 1300px;
+            --scroll-width: 17px;
+            --color-white: #FFF;
+            --color-black: #000;
+            --color-light: #F0F0F0;
+            --color-gray: #7C7C7C;
+            --color-new-gray: #404040;
+            --color-border: #E9E9E9;
+            --color-green: #27BE6C;
+            --color-green-hover: #18a859;
+            --color-blue: #193F76;
+            --color-blue-hover: #295ca4;
+            --color-violet: #5F20DB;
+            --color-violet-hover: #4b16a3;
+            --container-padding: calc(40px + 120 * ((100vw - 320px) / (1920 - 320)));
+            /* Primary brand color from original page */
+            --C: #4b16a3;
+            --C-06: rgba(17,40,100,0.06);
+            --C-08: rgba(17,40,100,0.08);
+            --C-10: rgba(17,40,100,0.10);
+            --C-15: rgba(17,40,100,0.15);
+            --C-20: rgba(17,40,100,0.20);
+            --C-30: rgba(17,40,100,0.30);
+            --C-40: rgba(17,40,100,0.40);
+            --C-45: rgba(17,40,100,0.45);
+            --C-50: rgba(17,40,100,0.50);
+            --C-55: rgba(17,40,100,0.55);
+            --C-60: rgba(17,40,100,0.60);
+        }
+
+        /* ── HEADER / NAVBAR (without changes) ─────────────────────── */
+        .l-header__logo-top {
+            color: var(--color-black) !important;
+            font-family: "Cocomat Pro", sans-serif !important;
+            font-weight: bold !important;
+        }
+        .l-header__logo-bottom {
+            font-family: "Cocomat Pro", sans-serif;
+        }
+        .let-i { color: var(--color-black) !important; }
+        .let-j { color: var(--color-blue) !important; }
+        .let-s { color: var(--color-violet) !important; }
+        .let-o { color: var(--color-green) !important; }
+        .slogan-black { color: var(--color-black) !important; }
+        .slogan-violet { color: var(--color-violet) !important; }
+        .slogan-green { color: var(--color-green) !important; }
+        .l-header__menu {
+            margin-left: auto !important;
+            padding-right: 20px !important;
+            display: flex !important;
+            align-items: center;
+        }
+        .l-header__menu a {
+            color: var(--color-black);
+            font-family: "Cocomat Pro", sans-serif;
+            text-decoration: none;
+            margin: 0 5px !important;
+            font-size: 16px;
+            white-space: nowrap;
+        }
+        .l-header__menu a:hover { color: var(--color-violet); }
+
+        /* ── PAGE LAYOUT ────────────────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: "Cocomat Pro", -apple-system, sans-serif;
+            background: #f7f8fc;
+        }
+
+        .reg-page {
+            padding-top: 80px;
+            min-height: 100vh;
+        }
+
+        /* ── HERO BANNER ────────────────────────────────────────────── */
+        .reg-hero {
+            background: var(--C);
+            padding: 64px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .reg-hero__inner {
+            max-width: 672px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        .reg-hero__eyebrow {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 12px;
+            font-family: "Cocomat Pro", sans-serif;
+        }
+        .reg-hero__title {
+            font-size: clamp(26px, 5vw, 36px);
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+            font-family: "Cocomat Pro", sans-serif;
+        }
+        .reg-hero__desc {
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.55);
+            font-family: "Cocomat Pro", sans-serif;
+        }
+
+        /* ── MAIN FORM AREA ─────────────────────────────────────────── */
+        .reg-body {
+            max-width: 672px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        /* ── MODE SWITCHER ──────────────────────────────────────────── */
+        .mode-switcher {
+            display: flex;
+            background: var(--C-06);
+            border-radius: 16px;
+            padding: 4px;
+            margin-bottom: 40px;
+        }
+        .mode-btn {
+            flex: 1;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: "Cocomat Pro", sans-serif;
+            background: transparent;
+            color: var(--C-50);
+        }
+        .mode-btn.active {
+            background: var(--C);
+            color: #fff;
+        }
+
+        /* ── FIND-BY-EMAIL CARD (edit mode) ─────────────────────────── */
+        .find-card {
+            background: #fff;
+            border: 1px solid var(--C-10);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 12px rgba(17,40,100,0.05);
+        }
+        .find-card__title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--C);
+            margin-bottom: 8px;
+            font-family: "Cocomat Pro", sans-serif;
+        }
+        .find-card__desc {
+            font-size: 14px;
+            color: var(--C-55);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        /* ── EDIT BANNER ────────────────────────────────────────────── */
+        .edit-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--C-06);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 32px;
+        }
+        .edit-banner__label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--C-45);
+            margin-bottom: 4px;
+            font-family: "Cocomat Pro", sans-serif;
+        }
+        .edit-banner__name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--C);
+            font-family: "Cocomat Pro", sans-serif;
+        }
+        .edit-banner__change {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--C);
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-bottom: 1px solid var(--C-30);
+            font-family: "Cocomat Pro", sans-serif;
+            padding-bottom: 1px;
+        }
+
+        /* ── SECTION HEADER (numbered) ──────────────────────────────── */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .section-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--C);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-family: "Cocomat Pro", sans-serif;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--C);
+            font-family: "Cocomat Pro", sans-serif;
+        }
+
+        /* ── FORM FIELDS ────────────────────────────────────────────── */
+        .form-section {
+            margin-bottom: 40px;
+        }
+        .field-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .field-grid .col-full { grid-column: 1 / -1; }
+        @media (max-width: 560px) {
+            .field-grid { grid-template-columns: 1fr; }
+            .field-grid .col-full { grid-column: 1; }
+        }
+
+        .field-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--C-50);
+            margin-bottom: 8px;
+            font-family: "Cocomat Pro", sans-serif;
+        }
+        .field-hint {
+            font-size: 12px;
+            color: var(--C-45);
+            margin-top: 6px;
+            line-height: 1.4;
+            opacity: 0.7;
+        }
+        .field-hint-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .field-hint-row svg { flex-shrink: 0; margin-top: 1px; opacity: 0.5; }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
+        select {
+            width: 100%;
+            border: 1px solid var(--C-15);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: var(--C);
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: "Cocomat Pro", sans-serif;
+            background: #fff;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        input:focus, select:focus {
+            border-color: var(--C-40);
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23112864' stroke-opacity='0.4' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        /* ── CONSENT ────────────────────────────────────────────────── */
+        .consent-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+        .consent-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            border: 2px solid var(--C-30);
+            background: transparent;
+            flex-shrink: 0;
+            margin-top: 2px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .consent-box.checked {
+            background: var(--C);
+            border-color: var(--C);
+        }
+        .consent-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--C-55);
+            font-family: "Cocomat Pro", sans-serif;
+        }
+        .consent-text a {
+            color: var(--C);
+            text-decoration: underline;
+        }
+
+        /* ── BUTTONS ────────────────────────────────────────────────── */
+        .btn-primary {
+            width: 100%;
+            background: var(--C);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 16px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.15s, transform 0.1s;
+            font-family: "Cocomat Pro", sans-serif;
+        }
+        .btn-primary:hover { opacity: 0.88; }
+        .btn-primary:active { transform: scale(0.99); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ── ERROR BOX ──────────────────────────────────────────────── */
+        .error-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: rgba(220,38,38,0.06);
+            border: 1px solid rgba(220,38,38,0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        .error-box p {
+            font-size: 14px;
+            color: #b91c1c;
+            line-height: 1.5;
+            font-family: "Cocomat Pro", sans-serif;
+        }
+        .error-box svg { flex-shrink: 0; margin-top: 1px; }
+
+        /* ── SUCCESS SCREEN ─────────────────────────────────────────── */
+        .success-screen {
+            display: none;
+            min-height: 70vh;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 24px;
+        }
+        .success-screen.visible { display: flex; }
+        .success-inner {
+            text-align: center;
+            max-width: 420px;
+        }
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--C-08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+        .success-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--C);
+            margin-bottom: 12px;
+            font-family: "Cocomat Pro", sans-serif;
+        }
+        .success-desc {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--C-60);
+            margin-bottom: 32px;
+            font-family: "Cocomat Pro", sans-serif;
+        }
+        .btn-link {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--C);
+            background: none;
+            border: none;
+            border-bottom: 1px solid var(--C-30);
+            cursor: pointer;
+            padding-bottom: 2px;
+            font-family: "Cocomat Pro", sans-serif;
+        }
+        .hidden { display: none !important; }
+    </style>
+
+    <link href="main.min.css" rel="stylesheet" type="text/css">
+</head>
+<body class="home page-template-default">
+
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="i-menu" viewBox="0 0 32 32">
+            <path d="M4 6h24v2H4zm0 9h24v2H4zm0 9h24v2H4z"/>
+        </symbol>
+    </svg>
+
+    <!-- ── NAVBAR (unchanged) ─────────────────────────────────────── -->
+    <div class="l-header">
+        <div class="container l-header__container">
+            <div class="l-header__left">
+                <a href="https://gettoijso.stemolympiads.kz" class="l-header__logo">
+                    <span class="l-header__logo-top">
+                        <span>G</span><span>e</span><span>t</span>&nbsp;<span>t</span><span>o</span>
+                    </span>
+                    <span class="l-header__logo-bottom">
+                        <span class="let-i">I</span><span class="let-j">J</span><span class="let-s">S</span><span class="let-o">O</span>
+                    </span>
+                </a>
+                <div class="l-header__slogan">
+                    <span class="slogan-black">International Junior</span>
+                    <span class="slogan-violet">Science</span>
+                    <span class="slogan-green">Olympiad</span>
+                </div>
+            </div>
+            <div class="l-header__menu">
+                <a href="https://gettoijso.stemolympiads.kz#stages">Этапы</a>
+                <a href="https://gettoijso.stemolympiads.kz/history/">История участия</a>
+                <a href="https://gettoijso.stemolympiads.kz/team/">Команда</a>
+                <a href="https://gettoijso.stemolympiads.kz/materials/">Материалы</a>
+            </div>
+            <button type="button" class="l-header__burger">
+                <svg class="icon__i-menu" width="32px" height="32px">
+                    <use xlink:href="#i-menu"></use>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- ── REGISTRATION PAGE ──────────────────────────────────────── -->
+    <div class="reg-page">
+
+        <!-- SUCCESS SCREEN -->
+        <div class="success-screen" id="successScreen">
+            <div class="success-inner">
+                <div class="success-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <path d="M6 16L13 23L26 9" stroke="#112864" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h1 class="success-title" id="successTitle">Регистрация прошла успешно!</h1>
+                <p class="success-desc" id="successDesc">
+                    Участник <strong id="successName"></strong> успешно зарегистрирован. Мы отправим подтверждение на указанный email.
+                </p>
+                <button class="btn-link" onclick="resetForm()">Зарегистрировать ещё одного участника</button>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT (hero + form) -->
+        <div id="mainContent">
+
+            
+
+            <!-- Form body -->
+            <div class="reg-body">
+
+                <!-- Mode switcher -->
+                <div class="mode-switcher">
+                    <button class="mode-btn active" id="btnModeRegister" onclick="switchMode('register')">Регистрация</button>
+                    <button class="mode-btn" id="btnModeEdit" onclick="switchMode('edit')">Изменить данные</button>
+                </div>
+
+                <!-- Edit mode: find by email -->
+                <div id="findCard" class="find-card hidden">
+                    <h2 class="find-card__title">Найти регистрацию</h2>
+                    <p class="find-card__desc">Введите email, который вы использовали при регистрации, чтобы загрузить и изменить свои данные.</p>
+                    <input type="email" id="findEmail" placeholder="example@mail.com" style="margin-bottom: 16px;"
+                           onkeydown="if(event.key==='Enter') handleFindParticipant()">
+                    <div id="findError" class="error-box hidden">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <circle cx="8" cy="8" r="7" stroke="#dc2626" stroke-width="1.5"/>
+                            <path d="M8 5v4M8 11v.5" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <p id="findErrorMsg"></p>
+                    </div>
+                    <button class="btn-primary" id="findBtn" onclick="handleFindParticipant()">Найти</button>
+                </div>
+
+                <!-- Edit banner (shown when found) -->
+                <div id="editBanner" class="edit-banner hidden">
+                    <div>
+                        <div class="edit-banner__label">Редактирование</div>
+                        <div class="edit-banner__name" id="editBannerName"></div>
+                    </div>
+                    <button class="edit-banner__change" onclick="resetFind()">Изменить</button>
+                </div>
+
+                <!-- Main form -->
+                <div id="formBlock">
+
+                    <!-- Section 1: Personal info -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <div class="section-num">1</div>
+                            <h2 class="section-title">Личные данные</h2>
+                        </div>
+                        <div class="field-grid">
+                            <!-- Full name (cyrillic) -->
+                            <div>
+                                <label class="field-label">ФИО (кириллица)</label>
+                                <input type="text" id="fullName" placeholder="Алихан Сейткали">
+                                <div class="field-hint">Пример: Алихан Сейткали</div>
+                            </div>
+                            <!-- Full name (latin) -->
+                            <div>
+                                <label class="field-label">ФИО (латиница)</label>
+                                <input type="text" id="fullNameLatin" placeholder="Alikhan Seitkali">
+                                <div class="field-hint">Example: Alikhan Seitkali</div>
+                            </div>
+                            <!-- Email -->
+                            <div>
+                                <label class="field-label">Email</label>
+                                <input type="email" id="email" placeholder="example@mail.com">
+                            </div>
+                            <!-- Grade -->
+                            <div>
+                                <label class="field-label">Класс</label>
+                                <select id="grade">
+                                    <option value="">Выберите класс</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                </select>
+                            </div>
+                            <!-- School -->
+                            <div class="col-full">
+                                <label class="field-label">Школа</label>
+                                <input type="text" id="school" placeholder="NIS Алматы, химико-биологическое направление">
+                                <div class="field-hint-row">
+                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                        <circle cx="6" cy="6" r="5.5" stroke="#112864" stroke-width="1"/>
+                                        <path d="M6 5v4M6 3.5v.5" stroke="#112864" stroke-width="1" stroke-linecap="round"/>
+                                    </svg>
+                                    <p class="field-hint" style="margin-top:0;">Укажите полное название школы и город</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error box -->
+                    <div id="errorBox" class="error-box hidden">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <circle cx="8" cy="8" r="7" stroke="#dc2626" stroke-width="1.5"/>
+                            <path d="M8 5v4M8 11v.5" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <p id="errorMsg"></p>
+                    </div>
+
+                    <!-- Consent (register mode only) -->
+                    <div id="consentRow" class="consent-row">
+                        <div class="consent-box" id="consentBox" onclick="toggleConsent()"></div>
+                        <p class="consent-text">
+                            Я даю согласие на обработку персональных данных в соответствии с
+                            <a href="https://bc-pf.org/docs/personaldata/list1-matomo.pdf" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+                            и подтверждаю, что ознакомлен(а) с
+                            <a href="https://bc-pf.org/personaldata" target="_blank" rel="noopener noreferrer">условиями обработки данных</a>.
+                        </p>
+                    </div>
+
+                    <!-- Submit button -->
+                    <button class="btn-primary" id="submitBtn" onclick="handleSubmit()">
+                        Зарегистрироваться
+                    </button>
+
+                </div><!-- /formBlock -->
+            </div><!-- /reg-body -->
+        </div><!-- /mainContent -->
+    </div><!-- /reg-page -->
+
+    <script>
+        // ── STATE ─────────────────────────────────────────────────────
+        let mode = 'register';          // 'register' | 'edit'
+        let consent = false;
+        let participantId = null;       // ID loaded in edit mode
+        let findStatus = 'idle';        // 'idle' | 'loading' | 'success' | 'error'
+        let submitStatus = 'idle';      // 'idle' | 'loading' | 'success' | 'error'
+
+        // ── HELPERS ───────────────────────────────────────────────────
+        function $(id) { return document.getElementById(id); }
+
+        function showError(msg) {
+            $('errorMsg').textContent = msg;
+            $('errorBox').classList.remove('hidden');
+        }
+        function hideError() {
+            $('errorBox').classList.add('hidden');
+        }
+
+        function showFindError(msg) {
+            $('findErrorMsg').textContent = msg;
+            $('findError').classList.remove('hidden');
+        }
+        function hideFindError() {
+            $('findError').classList.add('hidden');
+        }
+
+        // ── CONSENT ───────────────────────────────────────────────────
+        function toggleConsent() {
+            consent = !consent;
+            const box = $('consentBox');
+            if (consent) {
+                box.classList.add('checked');
+                box.innerHTML = '<svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>';
+            } else {
+                box.classList.remove('checked');
+                box.innerHTML = '';
+            }
+        }
+
+        // ── MODE SWITCH ───────────────────────────────────────────────
+        function switchMode(m) {
+            mode = m;
+            clearFields();
+            hideError();
+            hideFindError();
+            consent = false;
+            $('consentBox').classList.remove('checked');
+            $('consentBox').innerHTML = '';
+            participantId = null;
+            findStatus = 'idle';
+            submitStatus = 'idle';
+
+            if (m === 'register') {
+                $('btnModeRegister').classList.add('active');
+                $('btnModeEdit').classList.remove('active');
+                $('findCard').classList.add('hidden');
+                $('editBanner').classList.add('hidden');
+                $('formBlock').classList.remove('hidden');
+                $('consentRow').classList.remove('hidden');
+                $('submitBtn').textContent = 'Зарегистрироваться';
+            } else {
+                $('btnModeEdit').classList.add('active');
+                $('btnModeRegister').classList.remove('active');
+                $('findCard').classList.remove('hidden');
+                $('editBanner').classList.add('hidden');
+                $('formBlock').classList.add('hidden');
+                $('consentRow').classList.add('hidden');
+                $('submitBtn').textContent = 'Сохранить изменения';
+            }
+        }
+
+        function clearFields() {
+            ['fullName','fullNameLatin','email','grade','school'].forEach(id => {
+                const el = $(id);
+                if (el) el.tagName === 'SELECT' ? el.value = '' : el.value = '';
+            });
+        }
+
+        // ── FIND PARTICIPANT (edit mode) ──────────────────────────────
+        async function handleFindParticipant() {
+            const email = $('findEmail').value.trim();
+            if (!email) return;
+
+            hideFindError();
+            $('findBtn').disabled = true;
+            $('findBtn').textContent = 'Поиск...';
+            findStatus = 'loading';
+
+            try {
+                const res = await fetch(`/api/update-participant?email=${encodeURIComponent(email)}`);
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showFindError(data.error || 'Участник не найден');
+                    findStatus = 'error';
+                    $('findBtn').disabled = false;
+                    $('findBtn').textContent = 'Найти';
+                    return;
+                }
+
+                // Populate fields
+                participantId = data.id;
+                $('fullName').value       = data.full_name       || '';
+                $('fullNameLatin').value  = data.full_name_latin || '';
+                $('email').value          = data.email           || '';
+                $('grade').value          = data.grade           || '';
+                $('school').value         = data.school          || '';
+
+                // Show edit banner + form
+                $('editBannerName').textContent = data.full_name || data.email;
+                $('editBanner').classList.remove('hidden');
+                $('findCard').classList.add('hidden');
+                $('formBlock').classList.remove('hidden');
+                findStatus = 'success';
+
+            } catch (e) {
+                showFindError('Ошибка сети. Попробуйте ещё раз.');
+                findStatus = 'error';
+                $('findBtn').disabled = false;
+                $('findBtn').textContent = 'Найти';
+            }
+        }
+
+        function resetFind() {
+            $('findEmail').value = '';
+            hideFindError();
+            clearFields();
+            $('editBanner').classList.add('hidden');
+            $('findCard').classList.remove('hidden');
+            $('formBlock').classList.add('hidden');
+            $('findBtn').disabled = false;
+            $('findBtn').textContent = 'Найти';
+            participantId = null;
+            findStatus = 'idle';
+        }
+
+        // ── VALIDATION ────────────────────────────────────────────────
+        const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        function validate() {
+            const fullName      = $('fullName').value.trim();
+            const fullNameLatin = $('fullNameLatin').value.trim();
+            const email         = $('email').value.trim();
+            const grade         = $('grade').value;
+            const school        = $('school').value.trim();
+
+            if (!fullName)       { showError('Введите ФИО на кириллице.'); return false; }
+            if (!fullNameLatin)  { showError('Введите ФИО на латинице.'); return false; }
+            if (!email)          { showError('Введите email.'); return false; }
+            if (!emailRx.test(email)) { showError('Введите корректный email.'); return false; }
+            if (!grade)          { showError('Выберите класс.'); return false; }
+            if (!school)         { showError('Укажите школу.'); return false; }
+            if (mode === 'register' && !consent) {
+                showError('Необходимо дать согласие на обработку персональных данных.');
+                return false;
+            }
+            return true;
+        }
+
+        // ── SUBMIT ────────────────────────────────────────────────────
+        async function handleSubmit() {
+            hideError();
+            if (!validate()) return;
+
+            const payload = {
+                full_name:       $('fullName').value.trim(),
+                full_name_latin: $('fullNameLatin').value.trim(),
+                email:           $('email').value.trim(),
+                grade:           $('grade').value,
+                school:          $('school').value.trim(),
+            };
+
+            $('submitBtn').disabled = true;
+            $('submitBtn').textContent = 'Отправка...';
+            submitStatus = 'loading';
+
+            try {
+                let res, data;
+
+                if (mode === 'register') {
+                    res  = await fetch('/api/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                    });
+                } else {
+                    res = await fetch('/api/update-participant', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ...payload, participant_id: participantId }),
+                    });
+                }
+
+                data = await res.json();
+
+                if (!res.ok) {
+                    showError(data.error || 'Произошла ошибка. Попробуйте ещё раз.');
+                    submitStatus = 'error';
+                    $('submitBtn').disabled = false;
+                    $('submitBtn').textContent = mode === 'edit' ? 'Сохранить изменения' : 'Зарегистрироваться';
+                    return;
+                }
+
+                // Success
+                submitStatus = 'success';
+                const name = payload.full_name;
+                if (mode === 'edit') {
+                    $('successTitle').textContent = 'Данные успешно обновлены!';
+                    $('successDesc').innerHTML = 'Данные участника <strong>' + name + '</strong> успешно сохранены.';
+                    document.querySelector('.success-inner .btn-link').textContent = 'Обновить ещё раз';
+                } else {
+                    $('successTitle').textContent = 'Регистрация прошла успешно!';
+                    $('successDesc').innerHTML = 'Участник <strong>' + name + '</strong> успешно зарегистрирован. Подтверждение отправлено на указанный email.';
+                    document.querySelector('.success-inner .btn-link').textContent = 'Зарегистрировать ещё одного участника';
+                }
+                $('mainContent').classList.add('hidden');
+                $('successScreen').classList.add('visible');
+
+            } catch (e) {
+                showError('Ошибка сети. Проверьте соединение и попробуйте ещё раз.');
+                submitStatus = 'error';
+                $('submitBtn').disabled = false;
+                $('submitBtn').textContent = mode === 'edit' ? 'Сохранить изменения' : 'Зарегистрироваться';
+            }
+        }
+
+        // ── RESET ─────────────────────────────────────────────────────
+        function resetForm() {
+            switchMode('register');
+            $('mainContent').classList.remove('hidden');
+            $('successScreen').classList.remove('visible');
+            submitStatus = 'idle';
+        }
+    </script>
+
+</body>
+</html>
