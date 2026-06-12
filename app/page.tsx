@@ -727,7 +727,6 @@ function Gallery() {
                 {item.src && (
                   <img
                     src={item.src}
-                    alt={item.label}
                     style={{
                       position: "absolute",
                       inset: 0,
@@ -743,37 +742,7 @@ function Gallery() {
                   />
                 )}
 
-                {/* Градиентное затемнение снизу, чтобы текст подписи всегда легко читался */}
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: "linear-gradient(to top, rgba(13,13,20,0.8) 0%, rgba(13,13,20,0) 50%)",
-                    zIndex: 2,
-                    pointerEvents: "none",
-                  }}
-                />
-
-                {/* Подпись фото */}
-                <span
-                  style={{
-                    position: "relative",
-                    zIndex: 3, // Поднимаем над картинкой
-                    fontFamily: "Cocomat Pro, sans-serif",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    color: "#ffffff",
-                    background: "rgba(255,255,255,0.1)",
-                    borderRadius: 999,
-                    padding: "6px 14px",
-                    backdropFilter: "blur(12px)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                  }}
-                >
-                  {item.label}
-                </span>
+                
 
                 {/* Показываем старую иконку фотоаппарата ТОЛЬКО если картинка не передана */}
                 {!item.src && (
