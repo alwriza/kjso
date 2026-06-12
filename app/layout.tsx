@@ -11,6 +11,9 @@ const unbounded = Unbounded({
 export const metadata: Metadata = {
   title: "KJSO — Kazakhstan Junior Science Olympiad",
   description: "Национальная олимпиада по естественным наукам для школьников Казахстана",
+  icons: {
+    icon: '/favicon.png', // Явно указываем путь к PNG из папки public
+  }
 };
 
 export default function RootLayout({

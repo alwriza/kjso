@@ -1,6 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+
+// ── mobile hook ───────────────────────────────────────────────────────────────
+function useIsMobile() {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return mobile;
+}
 
 type Mode = "register" | "edit";
 
@@ -58,12 +70,19 @@ const btnPrimaryStyle: React.CSSProperties = {
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 30);
     window.addEventListener("scroll", h, { passive: true });
     return () => window.removeEventListener("scroll", h);
   }, []);
+
+  // close menu on resize to desktop
+  useEffect(() => {
+    if (!isMobile) setMenuOpen(false);
+  }, [isMobile]);
 
   return (
     <nav
@@ -74,20 +93,19 @@ function Navbar() {
         right: 0,
         zIndex: 100,
         transition: "background 0.35s, backdrop-filter 0.35s, border-color 0.35s",
-        background: scrolled ? "rgba(245,244,240,0.88)" : "transparent",
-        backdropFilter: scrolled ? "blur(16px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(13,13,20,0.08)" : "1px solid transparent",
+        background: scrolled || menuOpen ? "rgba(245,244,240,0.96)" : "transparent",
+        backdropFilter: scrolled || menuOpen ? "blur(16px)" : "none",
+        borderBottom: scrolled || menuOpen ? "1px solid rgba(13,13,20,0.08)" : "1px solid transparent",
       }}
     >
       <div
         style={{
           maxWidth: 1280,
           margin: "0 auto",
-          padding: "0 32px",
+          padding: "0 24px",
           height: 68,
           display: "flex",
           alignItems: "center",
-          gap: 40,
         }}
       >
         {/* Logo */}
@@ -117,48 +135,123 @@ function Navbar() {
           </span>
         </a>
 
-        {/* Links */}
-        <div style={{ display: "flex", gap: 32, marginLeft: "auto", alignItems: "center" }}>
-          {NAV_LINKS.map((l) => (
+        {/* Desktop links */}
+        {!isMobile && (
+          <div style={{ display: "flex", gap: 32, marginLeft: "auto", alignItems: "center" }}>
+            {NAV_LINKS.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                style={{
+                  fontFamily: "Cocomat Pro, sans-serif",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: "rgba(13,13,20,0.55)",
+                  textDecoration: "none",
+                  letterSpacing: "0.04em",
+                  transition: "color 0.15s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#4b16a3")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(13,13,20,0.55)")}
+              >
+                {l.label}
+              </a>
+            ))}
             <a
-              key={l.href}
-              href={l.href}
+              href="/registration"
               style={{
                 fontFamily: "Cocomat Pro, sans-serif",
                 fontSize: 13,
                 fontWeight: 700,
-                color: "rgba(13,13,20,0.55)",
+                color: "#fff",
+                background: "#4b16a3",
+                borderRadius: 999,
+                padding: "9px 22px",
                 textDecoration: "none",
                 letterSpacing: "0.04em",
-                transition: "color 0.15s",
+                transition: "opacity 0.15s",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#4b16a3")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(13,13,20,0.55)")}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+            >
+              Регистрация
+            </a>
+          </div>
+        )}
+
+        {/* Mobile burger */}
+        {isMobile && (
+          <button
+            onClick={() => setMenuOpen((o) => !o)}
+            style={{
+              marginLeft: "auto",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 8,
+              display: "flex",
+              flexDirection: "column",
+              gap: 5,
+            }}
+            aria-label="Меню"
+          >
+            <span style={{ display: "block", width: 22, height: 2, background: "#0D0D14", borderRadius: 2, transition: "all 0.2s", transform: menuOpen ? "rotate(45deg) translate(5px,5px)" : "none" }} />
+            <span style={{ display: "block", width: 22, height: 2, background: "#0D0D14", borderRadius: 2, transition: "all 0.2s", opacity: menuOpen ? 0 : 1 }} />
+            <span style={{ display: "block", width: 22, height: 2, background: "#0D0D14", borderRadius: 2, transition: "all 0.2s", transform: menuOpen ? "rotate(-45deg) translate(5px,-5px)" : "none" }} />
+          </button>
+        )}
+      </div>
+
+      {/* Mobile dropdown */}
+      {isMobile && menuOpen && (
+        <div
+          style={{
+            padding: "16px 24px 24px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+            borderTop: "1px solid rgba(13,13,20,0.06)",
+          }}
+        >
+          {NAV_LINKS.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              onClick={() => setMenuOpen(false)}
+              style={{
+                fontFamily: "Cocomat Pro, sans-serif",
+                fontSize: 15,
+                fontWeight: 700,
+                color: "rgba(13,13,20,0.65)",
+                textDecoration: "none",
+                padding: "10px 0",
+                letterSpacing: "0.03em",
+              }}
             >
               {l.label}
             </a>
           ))}
           <a
             href="/registration"
+            onClick={() => setMenuOpen(false)}
             style={{
               fontFamily: "Cocomat Pro, sans-serif",
-              fontSize: 13,
+              fontSize: 14,
               fontWeight: 700,
               color: "#fff",
               background: "#4b16a3",
               borderRadius: 999,
-              padding: "9px 22px",
+              padding: "12px 24px",
               textDecoration: "none",
               letterSpacing: "0.04em",
-              transition: "opacity 0.15s",
+              textAlign: "center",
+              marginTop: 8,
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
             Регистрация
           </a>
         </div>
-      </div>
+      )}
     </nav>
   );
 }
@@ -166,11 +259,12 @@ function Navbar() {
 // ── Footer ───────────────────────────────────────────────────────────────────────
 
 function Footer() {
+  const isMobile = useIsMobile();
   return (
     <footer
       style={{
         background: "#0D0D14",
-        padding: "48px 40px",
+        padding: isMobile ? "36px 20px" : "48px 40px",
         borderTop: "1px solid rgba(255,255,255,0.06)",
       }}
     >
@@ -179,10 +273,11 @@ function Footer() {
           maxWidth: 1200,
           margin: "0 auto",
           display: "flex",
+          flexDirection: isMobile ? "column" : "row",
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: isMobile ? "flex-start" : "center",
           flexWrap: "wrap",
-          gap: 24,
+          gap: isMobile ? 20 : 24,
         }}
       >
         <div>
@@ -213,7 +308,7 @@ function Footer() {
         <div
           style={{
             display: "flex",
-            gap: 32,
+            gap: isMobile ? 20 : 32,
             alignItems: "center",
             flexWrap: "wrap",
           }}
@@ -292,6 +387,7 @@ export default function RegistrationPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [successName, setSuccessName] = useState("");
+  const isMobile = useIsMobile();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -473,7 +569,7 @@ export default function RegistrationPage() {
       
 
       {/* FORM */}
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "120px 40px 52px", flex: 1 }}>
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: isMobile ? "100px 20px 52px" : "120px 40px 52px", flex: 1 }}>
 
         {/* Mode switcher */}
         <div
@@ -515,7 +611,7 @@ export default function RegistrationPage() {
               background: "#fff",
               border: "1px solid rgba(13,13,20,0.08)",
               borderRadius: 24,
-              padding: "36px 40px",
+              padding: isMobile ? "24px 20px" : "36px 40px",
               marginBottom: 40,
             }}
           >
@@ -669,7 +765,7 @@ export default function RegistrationPage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr",
+                gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
                 gap: 20,
                 marginBottom: 32,
               }}
@@ -742,7 +838,7 @@ export default function RegistrationPage() {
                 </div>
               </div>
 
-              <div style={{ gridColumn: "1 / -1" }}>
+              <div style={{ gridColumn: isMobile ? "1" : "1 / -1" }}>
                 <label style={labelStyle}>Школа</label>
                 <input
                   type="text"

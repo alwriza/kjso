@@ -61,33 +61,19 @@ const PARTNERS = [
   { name: "Beyond Curriculum", full: "Фонд Beyond Curriculum", role: "Партнёр 2026" },
 ];
 
-// Реальные фотографии с KJSO 2025 (подгружаются напрямую из папки public)
 const GALLERY = [
-  { 
-    src: "/IMG-20250625-WA0074.jpg" 
-  },
-  { 
-    src: "/IMG-20250625-WA0075.jpg" 
-  },
-  { 
-    src: "/IMG-20250625-WA0084.jpg" 
-  },
-  { 
-    src: "/IMG-20250625-WA0085.jpg" 
-  },
-  { 
-    src: "IMG-20250625-WA0091.jpg" 
-  },
-  { 
-    src: "/IMG-20250625-WA0092.jpg" 
-  }
+  { src: "/IMG-20250625-WA0074.jpg" },
+  { src: "/IMG-20250625-WA0075.jpg" },
+  { src: "/IMG-20250625-WA0084.jpg" },
+  { src: "/IMG-20250625-WA0085.jpg" },
+  { src: "/IMG-20250625-WA0091.jpg" }, // Добавил слеш для корректного пути
+  { src: "/IMG-20250625-WA0092.jpg" }
 ];
 
 // ── components ───────────────────────────────────────────────────────────────
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 30);
@@ -110,6 +96,7 @@ function Navbar() {
       }}
     >
       <div
+        className="nav-container"
         style={{
           maxWidth: 1280,
           margin: "0 auto",
@@ -148,7 +135,7 @@ function Navbar() {
         </a>
 
         {/* Desktop links */}
-        <div style={{ display: "flex", gap: 32, marginLeft: "auto", alignItems: "center" }}>
+        <div className="desktop-links" style={{ display: "flex", gap: 32, marginLeft: "auto", alignItems: "center" }}>
           {NAV_LINKS.map((l) => (
             <a
               key={l.href}
@@ -202,13 +189,10 @@ function Hero() {
     return () => clearInterval(t);
   }, []);
 
-  // animated dot — cycles through a 4-phase blink
-  const phase = tick % 30;
-  const dotOpacity = phase < 15 ? 1 : 0;
-
   return (
     <section
       id="hero"
+      className="hero-section"
       style={{
         minHeight: "100svh",
         background: "#0D0D14",
@@ -220,7 +204,6 @@ function Hero() {
         overflow: "hidden",
       }}
     >
-      {/* background grid */}
       <div
         style={{
           position: "absolute",
@@ -234,7 +217,6 @@ function Hero() {
         }}
       />
 
-      {/* radial glow */}
       <div
         style={{
           position: "absolute",
@@ -260,11 +242,7 @@ function Hero() {
         }}
       />
 
-      {/* eyebrow */}
       <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", width: "100%" }}>
-        
-
-        {/* main heading */}
         <h1
           style={{
             fontFamily: "var(--font-display), sans-serif",
@@ -291,7 +269,6 @@ function Hero() {
           <span style={{ display: "block", color: "#7B3FE4" }}>Olympiad</span>
         </h1>
 
-        {/* sub + ctas */}
         <div
           style={{
             display: "flex",
@@ -371,12 +348,14 @@ function Hero() {
 function StatsBar() {
   return (
     <div
+      className="stats-container"
       style={{
         background: "#4b16a3",
         padding: "0 40px",
       }}
     >
       <div
+        className="grid-stats"
         style={{
           maxWidth: 1200,
           margin: "0 auto",
@@ -388,6 +367,7 @@ function StatsBar() {
         {STATS.map((s) => (
           <div
             key={s.label}
+            className="stat-item"
             style={{
               padding: "28px 32px",
               borderRight: "1px solid rgba(255,255,255,0.12)",
@@ -432,6 +412,7 @@ function About() {
     <section
       id="about"
       ref={ref}
+      className="mobile-pad"
       style={{
         padding: "120px 40px",
         background: "#F5F4F0",
@@ -441,7 +422,6 @@ function About() {
       }}
     >
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        {/* eyebrow */}
         <div
           style={{
             fontFamily: "Cocomat Pro, sans-serif",
@@ -457,6 +437,7 @@ function About() {
         </div>
 
         <div
+          className="grid-about"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
@@ -515,13 +496,13 @@ function Stages() {
     <section
       id="stages"
       ref={ref}
+      className="stages-section"
       style={{
         padding: "0 40px 120px",
         background: "#F5F4F0",
       }}
     >
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        {/* section label */}
         <div
           style={{
             display: "flex",
@@ -547,9 +528,7 @@ function Stages() {
           </h2>
         </div>
 
-        {/* Timeline */}
         <div style={{ position: "relative", paddingLeft: 48 }}>
-          {/* vertical line */}
           <div
             style={{
               position: "absolute",
@@ -573,7 +552,6 @@ function Stages() {
                 transition: `opacity 0.6s ease ${i * 0.2}s, transform 0.6s ease ${i * 0.2}s`,
               }}
             >
-              {/* dot */}
               <div
                 style={{
                   position: "absolute",
@@ -589,7 +567,6 @@ function Stages() {
                 }}
               />
 
-              {/* title row */}
               <div
                 style={{
                   display: "flex",
@@ -623,7 +600,6 @@ function Stages() {
                 </span>
               </div>
 
-              {/* body */}
               <p
                 style={{
                   fontFamily: "Cocomat Pro, sans-serif",
@@ -650,6 +626,7 @@ function Gallery() {
     <section
       id="gallery"
       ref={ref}
+      className="mobile-pad"
       style={{
         padding: "120px 40px",
         background: "#0D0D14",
@@ -692,23 +669,22 @@ function Gallery() {
           </span>
         </div>
 
-        {/* СЕТКА ГАЛЕРЕИ */}
         <div
+          className="grid-gallery"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
-            /* auto-rows делает так, чтобы новые ряды добавлялись автоматически по 240px */
             gridAutoRows: "240px", 
             gap: 12,
           }}
         >
           {GALLERY.map((item, i) => {
-            /* Красиво распределяем широкие карточки для 6 элементов (первая и пятая будут большими) */
             const isWide = i === 0 || i === 4;
 
             return (
               <div
                 key={i}
+                className="gallery-item"
                 style={{
                   gridColumn: isWide ? "span 2" : "span 1",
                   borderRadius: 16,
@@ -723,7 +699,6 @@ function Gallery() {
                   cursor: "pointer",
                 }}
               >
-                {/* НАСТОЯЩЕЕ ИЗОБРАЖЕНИЕ */}
                 {item.src && (
                   <img
                     src={item.src}
@@ -736,15 +711,11 @@ function Gallery() {
                       zIndex: 1,
                       transition: "transform 0.4s ease",
                     }}
-                    // Эффект легкого приближения при наведении
                     onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.04)")}
                     onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                   />
                 )}
 
-                
-
-                {/* Показываем старую иконку фотоаппарата ТОЛЬКО если картинка не передана */}
                 {!item.src && (
                   <div style={{
                     position: "absolute",
@@ -787,6 +758,7 @@ function Partners() {
     <section
       id="partners"
       ref={ref}
+      className="mobile-pad"
       style={{
         padding: "120px 40px",
         background: "#F5F4F0",
@@ -811,6 +783,7 @@ function Partners() {
         </div>
 
         <div
+          className="grid-partners"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
@@ -821,6 +794,7 @@ function Partners() {
           {PARTNERS.map((p, i) => (
             <div
               key={p.name}
+              className="partner-item"
               style={{
                 borderRight: "1px solid rgba(13,13,20,0.1)",
                 borderBottom: "1px solid rgba(13,13,20,0.1)",
@@ -881,6 +855,7 @@ function CTA() {
   return (
     <section
       ref={ref}
+      className="mobile-pad"
       style={{
         padding: "120px 40px",
         background: "#4b16a3",
@@ -1006,16 +981,23 @@ function CTA() {
 function Footer() {
   return (
     <footer
+      className="footer-section"
       style={{
         background: "#0D0D14",
         padding: "48px 40px",
         borderTop: "1px solid rgba(255,255,255,0.06)",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: 24,
       }}
     >
       <div
         style={{
           maxWidth: 1200,
           margin: "0 auto",
+          width: "100%",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -1049,6 +1031,7 @@ function Footer() {
         </div>
 
         <div
+          className="footer-links"
           style={{
             display: "flex",
             gap: 32,
@@ -1092,11 +1075,53 @@ function Footer() {
   );
 }
 
-// ── PAGE ─────────────────────────────────────────────────────────────────────
-
 export default function Home() {
   return (
     <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media (max-width: 768px) {
+          .mobile-pad { padding: 60px 20px !important; }
+          .hero-section { padding: 0 20px 60px !important; }
+          
+          .nav-container { padding: 0 20px !important; gap: 20px !important; }
+          .desktop-links { 
+            overflow-x: auto; 
+            padding-bottom: 4px; 
+            -webkit-overflow-scrolling: touch; 
+            scrollbar-width: none; 
+          }
+          .desktop-links::-webkit-scrollbar { display: none; }
+          
+          .stats-container { padding: 0 20px !important; }
+          .grid-stats { 
+            grid-template-columns: repeat(2, 1fr) !important; 
+            border-left: none !important; 
+          }
+          .stat-item { 
+            padding: 20px 16px !important; 
+            border-bottom: 1px solid rgba(255,255,255,0.12); 
+          }
+          .stat-item:nth-child(even) { border-right: none !important; }
+          .stat-item:nth-last-child(-n+2) { border-bottom: none !important; }
+          
+          .grid-about { grid-template-columns: 1fr !important; gap: 40px !important; }
+          
+          .stages-section { padding: 0 20px 80px !important; }
+          
+          .grid-gallery { 
+            grid-template-columns: repeat(2, 1fr) !important; 
+            grid-auto-rows: 160px !important; 
+          }
+          .gallery-item { grid-column: span 1 !important; }
+          
+          .grid-partners { grid-template-columns: 1fr !important; border-left: none !important; }
+          .partner-item { border-left: 1px solid rgba(13,13,20,0.1); }
+          
+          .footer-section { padding: 40px 20px !important; flex-direction: column !important; align-items: flex-start !important; gap: 24px !important; }
+          .footer-links { justify-content: flex-start !important; gap: 16px !important; }
+        }
+      `}} />
+
       <Navbar />
       <main>
         <Hero />
