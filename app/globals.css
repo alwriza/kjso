@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-ink: #0D0D14;
+  --color-ink-60: rgba(13,13,20,0.6);
+  --color-ink-30: rgba(13,13,20,0.3);
+  --color-ink-10: rgba(13,13,20,0.1);
+  --color-surface: #F5F4F0;
+  --color-paper: #FAFAF8;
+  --color-violet: #4b16a3;
+  --color-violet-light: #7B3FE4;
+  --color-green: #27BE6C;
+  --color-blue: #193F76;
+  --color-amber: #F0A500;
+  --font-display: var(--font-unbounded);
+  --font-body: "Cocomat Pro", system-ui, sans-serif;
+}
+
+@font-face {
+  font-family: "Cocomat Pro";
+  src: url("/fonts/CocomatPro-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cocomat Pro";
+  src: url("/fonts/CocomatPro-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #F5F4F0;
+  color: #0D0D14;
+  font-family: "Cocomat Pro", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #4b16a3;
+  color: #fff;
+}
