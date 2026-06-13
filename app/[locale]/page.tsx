@@ -70,14 +70,14 @@ const GALLERY = [
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const t = useTranslations("Navbar");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
   
-  // Хуки для навигации
+  const t = useTranslations("Navbar");
   const pathname = usePathname();
   const router = useRouter();
   const params = useParams();
   
-  // Определяем текущий язык из URL (по умолчанию ru)
   const currentLocale = params?.locale || "ru";
 
   useEffect(() => {
@@ -86,28 +86,64 @@ function Navbar() {
     return () => window.removeEventListener("scroll", h);
   }, []);
 
-  // Абсолютно безопасная смена локали без дублирования в URL
+  useEffect(() => {
+    if (!isMobile) setMenuOpen(false);
+  }, [isMobile]);
+
   const changeLocale = (newLocale: string) => {
     let cleanPath = pathname;
-
-    // 1. Если путь начинается с текущей локали (например, /en/registration), отрезаем её
     if (cleanPath.startsWith(`/${currentLocale}/`)) {
       cleanPath = cleanPath.slice(`/${currentLocale}`.length);
     } else if (cleanPath === `/${currentLocale}`) {
       cleanPath = "";
     }
-
-    // 2. Всегда формируем строгий абсолютный путь от корня сайта с новым языком
     const nextPath = cleanPath.startsWith("/") ? cleanPath : `/${cleanPath}`;
     let finalUrl = `/${newLocale}${nextPath}`;
-
-    // Убираем лишний слэш на конце, если перешли просто на главную (например, из /kz/ делаем /kz)
     if (finalUrl.endsWith("/")) {
       finalUrl = finalUrl.slice(0, -1);
     }
-
     router.push(finalUrl || `/${newLocale}`);
   };
+
+  // Общий переключатель языков для десктопа и мобилки
+  const renderLanguageSwitcher = (isMobileMenu = false) => (
+    <div 
+      style={{ 
+        display: "flex", 
+        alignItems: "center", 
+        gap: 6, 
+        borderLeft: isMobileMenu ? "none" : "1px solid rgba(13,13,20,0.12)", 
+        paddingLeft: isMobileMenu ? 0 : 16,
+        marginLeft: isMobileMenu ? 0 : 4,
+        marginTop: isMobileMenu ? 12 : 0,
+        marginBottom: isMobileMenu ? 12 : 0
+      }}
+    >
+      {(["ru", "en", "kz"] as const).map((lang) => {
+        const isActive = currentLocale === lang || (currentLocale === "kk" && lang === "kz");
+        return (
+          <button
+            key={lang}
+            onClick={() => changeLocale(lang)}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "Cocomat Pro, sans-serif",
+              fontSize: isMobileMenu ? 14 : 11,
+              fontWeight: isActive ? 800 : 500,
+              color: isActive ? "#4b16a3" : "rgba(13,13,20,0.4)",
+              textTransform: "uppercase",
+              padding: "4px 6px",
+              transition: "color 0.15s",
+            }}
+          >
+            {lang}
+          </button>
+        );
+      })}
+    </div>
+  );
 
   return (
     <nav
@@ -118,133 +154,89 @@ function Navbar() {
         right: 0,
         zIndex: 100,
         transition: "background 0.35s, backdrop-filter 0.35s, border-color 0.35s",
-        background: scrolled ? "rgba(245,244,240,0.88)" : "transparent",
-        backdropFilter: scrolled ? "blur(16px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(13,13,20,0.08)" : "1px solid transparent",
+        background: scrolled || menuOpen ? "rgba(245,244,240,0.96)" : "transparent",
+        backdropFilter: scrolled || menuOpen ? "blur(16px)" : "none",
+        borderBottom: scrolled || menuOpen ? "1px solid rgba(13,13,20,0.08)" : "1px solid transparent",
       }}
     >
-      <div
-        className="nav-container"
-        style={{
-          maxWidth: 1280,
-          margin: "0 auto",
-          padding: "0 32px",
-          height: 68,
-          display: "flex",
-          alignItems: "center",
-          gap: 40,
-        }}
-      >
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", height: 68, display: "flex", alignItems: "center" }}>
         {/* Logo */}
-        <a href="#" style={{ textDecoration: "none", flexShrink: 0 }}>
-          <span
-            style={{
-              fontFamily: "var(--font-display), sans-serif",
-              fontWeight: 800,
-              fontSize: 18,
-              letterSpacing: "-0.03em",
-              color: "#4b16a3",
-            }}
-          >
+        <a href={`/${currentLocale}`} style={{ textDecoration: "none", flexShrink: 0 }}>
+          <span style={{ fontFamily: "var(--font-display), sans-serif", fontWeight: 800, fontSize: 18, letterSpacing: "-0.03em", color: "#4b16a3" }}>
             KJSO
           </span>
-          <span
-            style={{
-              fontFamily: "Cocomat Pro, sans-serif",
-              fontSize: 11,
-              color: "rgba(13,13,20,0.45)",
-              marginLeft: 8,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-            }}
-          >
+          <span style={{ fontFamily: "Cocomat Pro, sans-serif", fontSize: 11, color: "rgba(13,13,20,0.45)", marginLeft: 8, letterSpacing: "0.08em", textTransform: "uppercase" }}>
             {t("logoYear")}
           </span>
         </a>
 
-        {/* Links + Переключатель языков */}
-        <div className="desktop-links" style={{ display: "flex", gap: 28, marginLeft: "auto", alignItems: "center" }}>
+        {/* Desktop links */}
+        {!isMobile && (
+          <div style={{ display: "flex", gap: 32, marginLeft: "auto", alignItems: "center" }}>
+            {NAV_LINKS.map((l) => (
+              <a
+                key={l.id}
+                href={`/${currentLocale}${l.href}`}
+                style={{ fontFamily: "Cocomat Pro, sans-serif", fontSize: 13, fontWeight: 700, color: "rgba(13,13,20,0.55)", textDecoration: "none", letterSpacing: "0.04em", transition: "color 0.15s" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#4b16a3")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(13,13,20,0.55)")}
+              >
+                {t(`links.${l.id}`)}
+              </a>
+            ))}
+            
+            {renderLanguageSwitcher(false)}
+
+            <a
+              href={`/${currentLocale}/registration`}
+              style={{ fontFamily: "Cocomat Pro, sans-serif", fontSize: 13, fontWeight: 700, color: "#fff", background: "#4b16a3", borderRadius: 999, padding: "9px 22px", textDecoration: "none", letterSpacing: "0.04em", transition: "opacity 0.15s" }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+            >
+              {t("register")}
+            </a>
+          </div>
+        )}
+
+        {/* Mobile burger */}
+        {isMobile && (
+          <button
+            onClick={() => setMenuOpen((o) => !o)}
+            style={{ marginLeft: "auto", background: "none", border: "none", cursor: "pointer", padding: 8, display: "flex", flexDirection: "column", gap: 5 }}
+            aria-label={t("menu")}
+          >
+            <span style={{ display: "block", width: 22, height: 2, background: "#0D0D14", borderRadius: 2, transition: "all 0.2s", transform: menuOpen ? "rotate(45deg) translate(5px,5px)" : "none" }} />
+            <span style={{ display: "block", width: 22, height: 2, background: "#0D0D14", borderRadius: 2, transition: "all 0.2s", opacity: menuOpen ? 0 : 1 }} />
+            <span style={{ display: "block", width: 22, height: 2, background: "#0D0D14", borderRadius: 2, transition: "all 0.2s", transform: menuOpen ? "rotate(-45deg) translate(5px,-5px)" : "none" }} />
+          </button>
+        )}
+      </div>
+
+      {/* Mobile dropdown */}
+      {isMobile && menuOpen && (
+        <div style={{ padding: "16px 24px 24px", display: "flex", flexDirection: "column", gap: 4, borderTop: "1px solid rgba(13,13,20,0.06)" }}>
           {NAV_LINKS.map((l) => (
             <a
-              key={l.href}
-              href={l.href}
-              style={{
-                fontFamily: "Cocomat Pro, sans-serif",
-                fontSize: 13,
-                fontWeight: 700,
-                color: "rgba(13,13,20,0.55)",
-                textDecoration: "none",
-                letterSpacing: "0.04em",
-                transition: "color 0.15s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#4b16a3")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(13,13,20,0.55)")}
+              key={l.id}
+              href={`/${currentLocale}${l.href}`}
+              onClick={() => setMenuOpen(false)}
+              style={{ fontFamily: "Cocomat Pro, sans-serif", fontSize: 15, fontWeight: 700, color: "rgba(13,13,20,0.65)", textDecoration: "none", padding: "10px 0", letterSpacing: "0.03em" }}
             >
               {t(`links.${l.id}`)}
             </a>
           ))}
-
-          {/* Переключатель языков (RU | EN | KZ) — теперь везде строго KZ */}
-          <div 
-            style={{ 
-              display: "flex", 
-              alignItems: "center", 
-              gap: 6, 
-              borderLeft: "1px solid rgba(13,13,20,0.12)", 
-              paddingLeft: 16,
-              marginLeft: 4 
-            }}
-          >
-            {(["ru", "en", "kz"] as const).map((lang) => {
-              // Если текущая локаль в системе числится как 'kk', сопоставляем её с кнопкой 'kz'
-              const isActive = currentLocale === lang || (currentLocale === "kk" && lang === "kz");
-              
-              return (
-                <button
-                  key={lang}
-                  onClick={() => changeLocale(lang)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    fontFamily: "Cocomat Pro, sans-serif",
-                    fontSize: 11,
-                    fontWeight: isActive ? 800 : 500,
-                    color: isActive ? "#4b16a3" : "rgba(13,13,20,0.4)",
-                    textTransform: "uppercase",
-                    padding: "4px 6px",
-                    transition: "color 0.15s",
-                  }}
-                  onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = "#4b16a3"; }}
-                  onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = "rgba(13,13,20,0.4)"; }}
-                >
-                  {lang}
-                </button>
-              );
-            })}
-          </div>
+          
+          {renderLanguageSwitcher(true)}
 
           <a
-            href={`/${currentLocale === 'kk' ? 'kz' : currentLocale}/registration`}
-            style={{
-              fontFamily: "Cocomat Pro, sans-serif",
-              fontSize: 13,
-              fontWeight: 700,
-              color: "#fff",
-              background: "#4b16a3",
-              borderRadius: 999,
-              padding: "9px 22px",
-              textDecoration: "none",
-              letterSpacing: "0.04em",
-              transition: "opacity 0.15s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+            href={`/${currentLocale}/registration`}
+            onClick={() => setMenuOpen(false)}
+            style={{ fontFamily: "Cocomat Pro, sans-serif", fontSize: 14, fontWeight: 700, color: "#fff", background: "#4b16a3", borderRadius: 999, padding: "12px 24px", textDecoration: "none", letterSpacing: "0.04em", textAlign: "center", marginTop: 8 }}
           >
             {t("register")}
           </a>
         </div>
-      </div>
+      )}
     </nav>
   );
 }
