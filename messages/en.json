@@ -1,0 +1,130 @@
+{
+  "Navbar": {
+    "logoYear": "2026",
+    "register": "Registration",
+    "links": {
+      "stages": "Stages",
+      "about": "About Us",
+      "gallery": "Gallery",
+      "partners": "Partners"
+    }
+  },
+  "Hero": {
+    "title1": "Kazakhstan",
+    "title2": "Junior",
+    "title3": "Science",
+    "title4": "Olympiad",
+    "description": "National Science Olympiad for school students of 7–9 grades. Two stages, one goal — to go beyond the school curriculum.",
+    "btnRegister": "Register",
+    "btnRules": "Regulations"
+  },
+  "Stats": {
+    "classes": "grades",
+    "stages": "stages",
+    "tours": "final rounds",
+    "year": "year"
+  },
+  "About": {
+    "badge": "About the Olympiad",
+    "titleLine1": "Science —",
+    "titleLine2": "beyond",
+    "titleLine3": "the school",
+    "titleLine4": "curriculum",
+    "text1": "KJSO is an interdisciplinary Olympiad that tests participants' knowledge in three subjects at once — chemistry, biology, and physics. This approach allows obtaining comprehensive knowledge of natural sciences without being limited to a single subject. Tasks include test questions, theoretical open-ended problems, as well as an experimental round in the final stage. The Olympiad focuses on developing and creating opportunities for juniors, as well as their further preparation for the IJSO. Participants who will not turn 16 by December 31, 2026, are eligible to participate.",
+    "text2": "The Olympiad is open to students in grades 7–9 from all schools in Kazakhstan. The selection stage is online, the final is in-person in Almaty."
+  },
+  "Stages": {
+    "title": "Stages of the Kazakhstan Junior Science Olympiad.",
+    "stage01": {
+      "title": "Selection Stage",
+      "tag": "JUNE 21–22",
+      "body": "Takes place on the AppFormative platform. After access is granted, participants have 24 hours to complete the tasks. An appeal procedure is provided."
+    },
+    "stage02": {
+      "title": "Final Stage",
+      "tag": "JULY 27–31",
+      "body": "Three rounds — practical, theoretical, and test. Conducted in-person at the Kazakh-British Technical University with the support of the Beyond Curriculum Foundation."
+    }
+  },
+  "Gallery": {
+    "title": "Gallery",
+    "subtitle": "KJSO 2025 · Pavlodar"
+  },
+  "Partners": {
+    "badge": "Partners",
+    "kbtu": {
+      "name": "KBTU",
+      "full": "Kazakh-British Technical University",
+      "role": "Final Venue"
+    },
+    "ertis": {
+      "name": "Ertis Daryny",
+      "full": "Ertis Daryny, Pavlodar",
+      "role": "Partner 2025"
+    },
+    "beyond": {
+      "name": "Beyond Curriculum",
+      "full": "Beyond Curriculum Foundation",
+      "role": "Partner 2026"
+    }
+  },
+  "CTA": {
+    "titleLine1": "Registration",
+    "titleLine2": "is open",
+    "description": "Selection stage — June 21–22 online. Hurry up to register and get access to the assignments.",
+    "btnRegister": "Register",
+    "btnRules": "Regulations"
+  },
+  "Footer": {
+    "subtitle": "Kazakhstan Junior Science Olympiad",
+    "copyright": "© 2026 KJSO"
+  },
+  "Registration": {
+    "titleRegister": "Registration",
+    "titleEdit": "Edit details",
+    "findTitle": "Find Registration",
+    "findDesc": "Enter the email address you used during registration to load and modify your details.",
+    "findPlaceholder": "example@mail.com",
+    "btnFind": "Find",
+    "btnFinding": "Searching...",
+    "editBanner": "Editing Mode",
+    "btnChange": "Change",
+    "sectionPersonal": "Personal Data",
+    "labelFullName": "Full Name (Cyrillic)",
+    "placeholderFullName": "Alikhan Seitkali",
+    "hintFullName": "Example: Алихан Сейткали",
+    "labelFullNameLatin": "Full Name (Latin)",
+    "placeholderFullNameLatin": "Alikhan Seitkali",
+    "hintFullNameLatin": "Example: Alikhan Seitkali",
+    "labelEmail": "Email",
+    "labelGrade": "Grade",
+    "optionGrade": "Select grade",
+    "labelSchool": "School",
+    "placeholderSchool": "NIS Almaty, chemical-biological direction",
+    "hintSchool": "Specify the full name of the school and city",
+    "consentText": "I consent to the processing of personal data in accordance with the",
+    "privacyPolicy": "Privacy Policy",
+    "consentConfirm": "and confirm that I am familiar with the",
+    "dataTerms": "data processing conditions",
+    "btnSubmitRegister": "Register",
+    "btnSubmitEdit": "Save Changes",
+    "btnSubmitting": "Sending...",
+    "successRegisterTitle": "Registration Successful!",
+    "successEditTitle": "Data Updated!",
+    "successText": "Participant {name} was successfully {action}. Confirmation has been sent to the specified email.",
+    "actionRegistered": "registered",
+    "actionUpdated": "updated",
+    "btnSuccessRegisterMore": "Register another participant",
+    "btnSuccessEditMore": "Edit another participant",
+    "errCyrillic": "Please enter Full Name in Cyrillic.",
+    "errLatin": "Please enter Full Name in Latin.",
+    "errEmail": "Please enter email.",
+    "errEmailInvalid": "Please enter a valid email address.",
+    "errGrade": "Please select your grade.",
+    "errSchool": "Please specify your school.",
+    "errConsent": "Please agree to the data processing terms.",
+    "errSubmit": "Error submitting data",
+    "errSearch": "Error during search",
+    "errSearchParticipant": "Participant not found"
+  }
+}

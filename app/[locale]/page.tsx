@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
+import { usePathname, useRouter, useParams } from "next/navigation";
 
 // ── tiny helpers ─────────────────────────────────────────────────────────────
 
@@ -20,45 +22,39 @@ function useInView(threshold = 0.15) {
   return { ref, visible };
 }
 
-// ── data ─────────────────────────────────────────────────────────────────────
+// ── data id maps ─────────────────────────────────────────────────────────────
 
 const NAV_LINKS = [
-  { label: "Этапы", href: "#stages" },
-  { label: "О нас", href: "#about" },
-  { label: "Галерея", href: "#gallery" },
-  { label: "Партнёры", href: "#partners" },
+  { id: "stages", href: "#stages" },
+  { id: "about", href: "#about" },
+  { id: "gallery", href: "#gallery" },
+  { id: "partners", href: "#partners" },
 ];
 
 const STAGES = [
   {
+    id: "stage01",
     num: "01",
-    tag: "21–22 ИЮНЯ",
-    title: "Отборочный этап",
-    sub: "Онлайн",
-    body: "Проходит на платформе AppFormative. После открытия доступа у участников есть 24 часа на выполнение заданий. Предусмотрена процедура апелляции.",
     accent: "#7B3FE4",
   },
   {
+    id: "stage02",
     num: "02",
-    tag: "27–31 ИЮЛЯ",
-    title: "Заключительный этап",
-    sub: "Алматы · КБТУ",
-    body: "Три тура — практический, теоретический и тестовый. Проводится очно на базе Казахстанско-Британского технического университета при поддержке Фонда Beyond Curriculum.",
     accent: "#27BE6C",
   },
 ];
 
 const STATS = [
-  { value: "7–9", label: "классы" },
-  { value: "2", label: "этапа" },
-  { value: "3", label: "тура финала" },
-  { value: "2026", label: "год" },
+  { id: "classes", value: "7–9" },
+  { id: "stages", value: "2" },
+  { id: "tours", value: "3" },
+  { id: "year", value: "2026" },
 ];
 
 const PARTNERS = [
-  { name: "КБТУ", full: "Казахстанско-Британский технический университет", role: "Площадка финала" },
-  { name: "Ертіс Дарыны", full: "Ертіс Дарыны, Павлодар", role: "Партнёр 2025" },
-  { name: "Beyond Curriculum", full: "Фонд Beyond Curriculum", role: "Партнёр 2026" },
+  { id: "kbtu" },
+  { id: "ertis" },
+  { id: "beyond" },
 ];
 
 const GALLERY = [
@@ -66,7 +62,7 @@ const GALLERY = [
   { src: "/IMG-20250625-WA0075.jpg" },
   { src: "/IMG-20250625-WA0084.jpg" },
   { src: "/IMG-20250625-WA0085.jpg" },
-  { src: "/IMG-20250625-WA0091.jpg" }, // Добавил слеш для корректного пути
+  { src: "/IMG-20250625-WA0091.jpg" },
   { src: "/IMG-20250625-WA0092.jpg" }
 ];
 
@@ -74,12 +70,44 @@ const GALLERY = [
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const t = useTranslations("Navbar");
+  
+  // Хуки для навигации
+  const pathname = usePathname();
+  const router = useRouter();
+  const params = useParams();
+  
+  // Определяем текущий язык из URL (по умолчанию ru)
+  const currentLocale = params?.locale || "ru";
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 30);
     window.addEventListener("scroll", h, { passive: true });
     return () => window.removeEventListener("scroll", h);
   }, []);
+
+  // Абсолютно безопасная смена локали без дублирования в URL
+  const changeLocale = (newLocale: string) => {
+    let cleanPath = pathname;
+
+    // 1. Если путь начинается с текущей локали (например, /en/registration), отрезаем её
+    if (cleanPath.startsWith(`/${currentLocale}/`)) {
+      cleanPath = cleanPath.slice(`/${currentLocale}`.length);
+    } else if (cleanPath === `/${currentLocale}`) {
+      cleanPath = "";
+    }
+
+    // 2. Всегда формируем строгий абсолютный путь от корня сайта с новым языком
+    const nextPath = cleanPath.startsWith("/") ? cleanPath : `/${cleanPath}`;
+    let finalUrl = `/${newLocale}${nextPath}`;
+
+    // Убираем лишний слэш на конце, если перешли просто на главную (например, из /kz/ делаем /kz)
+    if (finalUrl.endsWith("/")) {
+      finalUrl = finalUrl.slice(0, -1);
+    }
+
+    router.push(finalUrl || `/${newLocale}`);
+  };
 
   return (
     <nav
@@ -130,12 +158,12 @@ function Navbar() {
               textTransform: "uppercase",
             }}
           >
-            2026
+            {t("logoYear")}
           </span>
         </a>
 
-        {/* Desktop links */}
-        <div className="desktop-links" style={{ display: "flex", gap: 32, marginLeft: "auto", alignItems: "center" }}>
+        {/* Links + Переключатель языков */}
+        <div className="desktop-links" style={{ display: "flex", gap: 28, marginLeft: "auto", alignItems: "center" }}>
           {NAV_LINKS.map((l) => (
             <a
               key={l.href}
@@ -152,12 +180,52 @@ function Navbar() {
               onMouseEnter={(e) => (e.currentTarget.style.color = "#4b16a3")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(13,13,20,0.55)")}
             >
-              {l.label}
+              {t(`links.${l.id}`)}
             </a>
           ))}
 
+          {/* Переключатель языков (RU | EN | KZ) — теперь везде строго KZ */}
+          <div 
+            style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              gap: 6, 
+              borderLeft: "1px solid rgba(13,13,20,0.12)", 
+              paddingLeft: 16,
+              marginLeft: 4 
+            }}
+          >
+            {(["ru", "en", "kz"] as const).map((lang) => {
+              // Если текущая локаль в системе числится как 'kk', сопоставляем её с кнопкой 'kz'
+              const isActive = currentLocale === lang || (currentLocale === "kk" && lang === "kz");
+              
+              return (
+                <button
+                  key={lang}
+                  onClick={() => changeLocale(lang)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "Cocomat Pro, sans-serif",
+                    fontSize: 11,
+                    fontWeight: isActive ? 800 : 500,
+                    color: isActive ? "#4b16a3" : "rgba(13,13,20,0.4)",
+                    textTransform: "uppercase",
+                    padding: "4px 6px",
+                    transition: "color 0.15s",
+                  }}
+                  onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = "#4b16a3"; }}
+                  onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = "rgba(13,13,20,0.4)"; }}
+                >
+                  {lang}
+                </button>
+              );
+            })}
+          </div>
+
           <a
-            href="/registration"
+            href={`/${currentLocale === 'kk' ? 'kz' : currentLocale}/registration`}
             style={{
               fontFamily: "Cocomat Pro, sans-serif",
               fontSize: 13,
@@ -173,7 +241,7 @@ function Navbar() {
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
-            Регистрация
+            {t("register")}
           </a>
         </div>
       </div>
@@ -182,11 +250,12 @@ function Navbar() {
 }
 
 function Hero() {
+  const t = useTranslations("Hero");
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
-    const t = setInterval(() => setTick((n) => n + 1), 80);
-    return () => clearInterval(t);
+    const tInterval = setInterval(() => setTick((n) => n + 1), 80);
+    return () => clearInterval(tInterval);
   }, []);
 
   return (
@@ -254,19 +323,19 @@ function Hero() {
             marginBottom: 40,
           }}
         >
-          <span style={{ display: "block" }}>Kazakhstan</span>
+          <span style={{ display: "block" }}>{t("title1")}</span>
           <span style={{ display: "block" }}>
-            Junior{" "}
+            {t("title2")}{" "}
             <span
               style={{
                 color: "transparent",
                 WebkitTextStroke: "1px rgba(255,255,255,0.25)",
               }}
             >
-              Science
+              {t("title3")}
             </span>
           </span>
-          <span style={{ display: "block", color: "#7B3FE4" }}>Olympiad</span>
+          <span style={{ display: "block", color: "#7B3FE4" }}>{t("title4")}</span>
         </h1>
 
         <div
@@ -287,8 +356,7 @@ function Hero() {
               maxWidth: 420,
             }}
           >
-            Национальная олимпиада по естественным наукам для школьников 7–9 классов.
-            Два этапа, одна цель — выйти за рамки школьной программы.
+            {t("description")}
           </p>
 
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -310,7 +378,7 @@ function Hero() {
               onMouseEnter={(e) => (e.currentTarget.style.background = "#7B3FE4")}
               onMouseLeave={(e) => (e.currentTarget.style.background = "#4b16a3")}
             >
-              Зарегистрироваться
+              {t("btnRegister")}
             </a>
             <a
               href="#"
@@ -336,7 +404,7 @@ function Hero() {
                 e.currentTarget.style.color = "rgba(255,255,255,0.6)";
               }}
             >
-              Регламент
+              {t("btnRules")}
             </a>
           </div>
         </div>
@@ -346,6 +414,8 @@ function Hero() {
 }
 
 function StatsBar() {
+  const t = useTranslations("Stats");
+
   return (
     <div
       className="stats-container"
@@ -366,7 +436,7 @@ function StatsBar() {
       >
         {STATS.map((s) => (
           <div
-            key={s.label}
+            key={s.id}
             className="stat-item"
             style={{
               padding: "28px 32px",
@@ -396,7 +466,7 @@ function StatsBar() {
                 color: "rgba(255,255,255,0.4)",
               }}
             >
-              {s.label}
+              {t(s.id)}
             </div>
           </div>
         ))}
@@ -407,6 +477,7 @@ function StatsBar() {
 
 function About() {
   const { ref, visible } = useInView();
+  const t = useTranslations("About");
 
   return (
     <section
@@ -433,7 +504,7 @@ function About() {
             marginBottom: 24,
           }}
         >
-          О олимпиаде
+          {t("badge")}
         </div>
 
         <div
@@ -455,9 +526,9 @@ function About() {
               color: "#0D0D14",
             }}
           >
-            Наука —<br />
-            <span style={{ color: "#4b16a3" }}>вне</span> школьной<br />
-            программы
+            {t("titleLine1")}<br />
+            <span style={{ color: "#4b16a3" }}>{t("titleLine2")}</span> {t("titleLine3")}<br />
+            {t("titleLine4")}
           </h2>
 
           <div>
@@ -470,7 +541,7 @@ function About() {
                 marginBottom: 24,
               }}
             >
-              KJSO — это не контрольная работа с усложнёнными задачами. Это среда, в которой школьники учатся работать с неопределённостью, выдвигать гипотезы и защищать их перед экспертами.
+              {t("text1")}
             </p>
             <p
               style={{
@@ -480,7 +551,7 @@ function About() {
                 color: "rgba(13,13,20,0.6)",
               }}
             >
-              Олимпиада открыта для учеников 7–9 классов из всех школ Казахстана. Отборочный этап — онлайн, финал — очно в Алматы.
+              {t("text2")}
             </p>
           </div>
         </div>
@@ -491,6 +562,7 @@ function About() {
 
 function Stages() {
   const { ref, visible } = useInView(0.1);
+  const t = useTranslations("Stages");
 
   return (
     <section
@@ -524,7 +596,7 @@ function Stages() {
               textTransform: "uppercase",
             }}
           >
-            Этапы проведения Kazakhstan Junior Science Olympiad.
+            {t("title")}
           </h2>
         </div>
 
@@ -543,7 +615,7 @@ function Stages() {
 
           {STAGES.map((stage, i) => (
             <div
-              key={stage.num}
+              key={stage.id}
               style={{
                 position: "relative",
                 marginBottom: i < STAGES.length - 1 ? 56 : 0,
@@ -585,7 +657,7 @@ function Stages() {
                     color: "#0D0D14",
                   }}
                 >
-                  {stage.title}
+                  {t(`${stage.id}.title`)}
                 </span>
                 <span
                   style={{
@@ -596,7 +668,7 @@ function Stages() {
                     letterSpacing: "-0.01em",
                   }}
                 >
-                  {stage.tag.toLowerCase().replace("–", "-")}
+                  {t(`${stage.id}.tag`).toLowerCase().replace("–", "-")}
                 </span>
               </div>
 
@@ -609,7 +681,7 @@ function Stages() {
                   maxWidth: 680,
                 }}
               >
-                {stage.body}
+                {t(`${stage.id}.body`)}
               </p>
             </div>
           ))}
@@ -621,6 +693,7 @@ function Stages() {
 
 function Gallery() {
   const { ref, visible } = useInView(0.1);
+  const t = useTranslations("Gallery");
 
   return (
     <section
@@ -653,7 +726,7 @@ function Gallery() {
               margin: 0,
             }}
           >
-            Галерея
+            {t("title")}
           </h2>
           <span
             style={{
@@ -665,7 +738,7 @@ function Gallery() {
               color: "rgba(255,255,255,0.25)",
             }}
           >
-            KJSO 2025 · Павлодар
+            {t("subtitle")}
           </span>
         </div>
 
@@ -702,6 +775,7 @@ function Gallery() {
                 {item.src && (
                   <img
                     src={item.src}
+                    alt=""
                     style={{
                       position: "absolute",
                       inset: 0,
@@ -753,6 +827,7 @@ function Gallery() {
 
 function Partners() {
   const { ref, visible } = useInView();
+  const t = useTranslations("Partners");
 
   return (
     <section
@@ -779,7 +854,7 @@ function Partners() {
             marginBottom: 48,
           }}
         >
-          Партнёры
+          {t("badge")}
         </div>
 
         <div
@@ -793,7 +868,7 @@ function Partners() {
         >
           {PARTNERS.map((p, i) => (
             <div
-              key={p.name}
+              key={p.id}
               className="partner-item"
               style={{
                 borderRight: "1px solid rgba(13,13,20,0.1)",
@@ -813,7 +888,7 @@ function Partners() {
                   marginBottom: 8,
                 }}
               >
-                {p.name}
+                {t(`${p.id}.name`)}
               </div>
               <div
                 style={{
@@ -824,7 +899,7 @@ function Partners() {
                   lineHeight: 1.4,
                 }}
               >
-                {p.full}
+                {t(`${p.id}.full`)}
               </div>
               <div
                 style={{
@@ -839,7 +914,7 @@ function Partners() {
                   color: "#4b16a3",
                 }}
               >
-                {p.role}
+                {t(`${p.id}.role`)}
               </div>
             </div>
           ))}
@@ -851,6 +926,7 @@ function Partners() {
 
 function CTA() {
   const { ref, visible } = useInView();
+  const t = useTranslations("CTA");
 
   return (
     <section
@@ -910,7 +986,7 @@ function CTA() {
             marginBottom: 32,
           }}
         >
-          Регистрация<br />открыта
+          {t("titleLine1")}<br />{t("titleLine2")}
         </h2>
 
         <p
@@ -924,7 +1000,7 @@ function CTA() {
             margin: "0 auto 48px",
           }}
         >
-          Отборочный этап — 21–22 июня онлайн. Успей зарегистрироваться и получить доступ к заданиям.
+          {t("description")}
         </p>
 
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -945,7 +1021,7 @@ function CTA() {
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
-            Зарегистрироваться
+            {t("btnRegister")}
           </a>
           <a
             href="#"
@@ -970,7 +1046,7 @@ function CTA() {
               e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)";
             }}
           >
-            Регламент
+            {t("btnRules")}
           </a>
         </div>
       </div>
@@ -979,6 +1055,9 @@ function CTA() {
 }
 
 function Footer() {
+  const t = useTranslations("Footer");
+  const tNav = useTranslations("Navbar");
+
   return (
     <footer
       className="footer-section"
@@ -1005,6 +1084,7 @@ function Footer() {
           gap: 24,
         }}
       >
+        {/* Логотип */}
         <div>
           <span
             style={{
@@ -1026,10 +1106,11 @@ function Footer() {
               letterSpacing: "0.1em",
             }}
           >
-            Kazakhstan Junior Science Olympiad
+            {t("subtitle")}
           </span>
         </div>
 
+        {/* Навигационные ссылки */}
         <div
           className="footer-links"
           style={{
@@ -1055,11 +1136,73 @@ function Footer() {
               onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.3)")}
             >
-              {l.label}
+              {tNav(`links.${l.id}`)}
             </a>
           ))}
         </div>
 
+        {/* Новые контакты: Telegram, Instagram, Почта */}
+        <div
+          className="footer-contacts"
+          style={{
+            display: "flex",
+            gap: 24,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <a
+            href="https://t.me/gtijsokz"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontFamily: "Cocomat Pro, sans-serif",
+              fontSize: 12,
+              fontWeight: 500,
+              color: "rgba(255,255,255,0.35)",
+              textDecoration: "none",
+              transition: "color 0.15s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#24A1DE")} // Цвет Telegram
+            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.35)")}
+          >
+            Telegram
+          </a>
+          <a
+            href="https://instagram.com/kjso.kz"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontFamily: "Cocomat Pro, sans-serif",
+              fontSize: 12,
+              fontWeight: 500,
+              color: "rgba(255,255,255,0.35)",
+              textDecoration: "none",
+              transition: "color 0.15s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#E1306C")} // Цвет Instagram
+            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.35)")}
+          >
+            Instagram
+          </a>
+          <a
+            href="mailto:info@gettoijso.kz"
+            style={{
+              fontFamily: "Cocomat Pro, sans-serif",
+              fontSize: 12,
+              fontWeight: 500,
+              color: "rgba(255,255,255,0.35)",
+              textDecoration: "none",
+              transition: "color 0.15s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.35)")}
+          >
+            info@gettoijso.kz
+          </a>
+        </div>
+
+        {/* Копирайт */}
         <div
           style={{
             fontFamily: "Cocomat Pro, sans-serif",
@@ -1068,7 +1211,7 @@ function Footer() {
             letterSpacing: "0.06em",
           }}
         >
-          © 2026 KJSO
+          {t("copyright")}
         </div>
       </div>
     </footer>
