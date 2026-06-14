@@ -4,6 +4,18 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useParams } from "next/navigation";
 
+// ── mobile hook ───────────────────────────────────────────────────────────────
+function useIsMobile() {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return mobile;
+}
+
 // ── tiny helpers ─────────────────────────────────────────────────────────────
 
 function useInView(threshold = 0.15) {
