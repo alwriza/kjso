@@ -22,7 +22,10 @@
     "classes": "сыныптар",
     "stages": "кезең",
     "tours": "финалдық тур",
-    "year": "жыл"
+    "year": "жылы",
+    "prizeFund": "жүлде қоры",
+    "participants": "қатысушы",
+    "finalists": "финалист"
   },
   "About": {
     "badge": "Олимпиада туралы",
