@@ -22,10 +22,13 @@
     "classes": "классы",
     "stages": "этапа",
     "tours": "тура финала",
-    "year": "год"
+    "year": "год",
+    "prizeFund": "призовой фонд",
+    "participants": "участников",
+    "finalists": "финалистов"
   },
   "About": {
-    "badge": "О олимпиаде",
+    "badge": "Об Олимпиаде",
     "titleLine1": "Наука —",
     "titleLine2": "вне",
     "titleLine3": "школьной",

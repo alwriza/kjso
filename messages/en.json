@@ -22,7 +22,10 @@
     "classes": "grades",
     "stages": "stages",
     "tours": "final rounds",
-    "year": "year"
+    "year": "year",
+    "prizeFund": "prize fund",
+    "participants": "participants",
+    "finalists": "finalists"
   },
   "About": {
     "badge": "About the Olympiad",
