@@ -114,7 +114,7 @@
     "btnSubmitting": "Отправка...",
     "successRegisterTitle": "Регистрация прошла успешно!",
     "successEditTitle": "Данные обновлены!",
-    "successText": "Участник {name} успешно {action}. Подтверждение отправлено на указанный email.",
+    "successText": "Участник {name} успешно {action}.",
     "actionRegistered": "зарегистрирован",
     "actionUpdated": "обновлён",
     "btnSuccessRegisterMore": "Зарегистрировать ещё одного участника",
