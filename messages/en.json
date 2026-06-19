@@ -114,7 +114,7 @@
     "btnSubmitting": "Sending...",
     "successRegisterTitle": "Registration Successful!",
     "successEditTitle": "Data Updated!",
-    "successText": "Participant {name} was successfully {action}. Confirmation has been sent to the specified email.",
+    "successText": "Participant {name} was successfully {action}.",
     "actionRegistered": "registered",
     "actionUpdated": "updated",
     "btnSuccessRegisterMore": "Register another participant",

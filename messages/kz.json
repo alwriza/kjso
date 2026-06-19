@@ -114,7 +114,7 @@
     "btnSubmitting": "Жіберілуде...",
     "successRegisterTitle": "Тіркелу сәтті өтті!",
     "successEditTitle": "Деректер жаңартылды!",
-    "successText": "{name} қатысушысы сәтті {action}. Растау хаты көрсетілген email мекенжайына жіберілді.",
+    "successText": "{name} қатысушысы сәтті {action}.",
     "actionRegistered": "тіркелді",
     "actionUpdated": "жаңартылды",
     "btnSuccessRegisterMore": "Тағы бір қатысушыны тіркеу",
