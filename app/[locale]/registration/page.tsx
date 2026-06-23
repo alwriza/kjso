@@ -413,6 +413,7 @@ export default function RegistrationPage() {
     fullName: "",
     fullNameLatin: "",
     email: "",
+    phone: "",
     grade: "",
     school: "",
   });
@@ -422,7 +423,7 @@ export default function RegistrationPage() {
   };
 
   const clearForm = () =>
-    setFormData({ fullName: "", fullNameLatin: "", email: "", grade: "", school: "" });
+    setFormData({ fullName: "", fullNameLatin: "", email: "", phone: "", grade: "", school: "" });
 
   const handleSwitchMode = (newMode: Mode) => {
     setMode(newMode);
@@ -447,6 +448,7 @@ export default function RegistrationPage() {
         fullName: data.full_name || "",
         fullNameLatin: data.full_name_latin || "",
         email: data.email || "",
+        phone: data.phone || "",
         grade: data.grade || "",
         school: data.school || "",
       });
@@ -471,6 +473,7 @@ export default function RegistrationPage() {
     if (!formData.fullNameLatin.trim())  { setError(t("errLatin")); return false; }
     if (!formData.email.trim())          { setError(t("errEmail")); return false; }
     if (!emailRx.test(formData.email))   { setError(t("errEmailInvalid")); return false; }
+    if (!formData.phone.trim())          { setError(t("errPhone")); return false; }
     if (!formData.grade)                 { setError(t("errGrade")); return false; }
     if (!formData.school.trim())         { setError(t("errSchool")); return false; }
     if (mode === "register" && !consent) { setError(t("errConsent")); return false; }
@@ -488,8 +491,8 @@ export default function RegistrationPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
           isRegister
-            ? { full_name: formData.fullName, full_name_latin: formData.fullNameLatin, email: formData.email, grade: formData.grade, school: formData.school }
-            : { participant_id: participantId, full_name: formData.fullName, full_name_latin: formData.fullNameLatin, email: formData.email, grade: formData.grade, school: formData.school }
+            ? { full_name: formData.fullName, full_name_latin: formData.fullNameLatin, email: formData.email, phone: formData.phone, grade: formData.grade, school: formData.school }
+            : { participant_id: participantId, full_name: formData.fullName, full_name_latin: formData.fullNameLatin, email: formData.email, phone: formData.phone, grade: formData.grade, school: formData.school }
         ),
       });
       const data = await res.json();
@@ -655,6 +658,18 @@ export default function RegistrationPage() {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder={t("findPlaceholder")}
+                  style={inputStyle}
+                />
+              </div>
+
+              <div>
+                <label style={labelStyle}>{t("labelPhone")}</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  placeholder={t("placeholderPhone")}
                   style={inputStyle}
                 />
               </div>
